@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -13,6 +15,7 @@ export default function LoginPage() {
         {/* Logo and Header */}
         <div className="text-center mb-10">
           <Link href="/">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="AdsGuruAI Logo" className="h-12 mx-auto mb-6 object-contain hover:scale-105 transition-transform" />
           </Link>
           <h2 className="text-3xl font-extrabold text-white tracking-tight mb-2">Welcome Back</h2>
@@ -20,7 +23,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert("Dashboard is currently under maintenance. Please contact support."); }}>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
             <div className="relative">
@@ -40,7 +43,7 @@ export default function LoginPage() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-300">Password</label>
-              <Link href="/# pricing" className="text-xs text-amber-400 hover:text-amber-300">Forgot Password?</Link>
+              <Link href="/" className="text-xs text-amber-400 hover:text-amber-300">Forgot Password?</Link>
             </div>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-500">
@@ -68,7 +71,7 @@ export default function LoginPage() {
         {/* Signup Link */}
         <p className="mt-10 text-center text-sm text-gray-400">
           New client? {' '}
-          <Link href="/#pricing" className="font-semibold text-amber-400 hover:text-amber-300">Book your first AI audit</Link>
+          <Link href="/" className="font-semibold text-amber-400 hover:text-amber-300">Book your first AI audit</Link>
         </p>
       </div>
     </div>
