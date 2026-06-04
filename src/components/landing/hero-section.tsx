@@ -40,7 +40,7 @@ export function HeroSection() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link
-                href="/dashboard"
+                href="#pricing"
                 className="btn-gold inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-[#0F172A] transition-all"
               >
                 <Play className="w-5 h-5" />
