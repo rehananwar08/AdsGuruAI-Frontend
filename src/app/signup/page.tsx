@@ -1,8 +1,55 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../../lib/firebase";
 
 export default function SignupPage() {
+  const router = useRouter();
+  
+  // Data save karne ke liye states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Asli Magic Function
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      // 1. Firebase mein account banana
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // 2. User ka naam save karna
+      await updateProfile(userCredential.user, {
+        displayName: name
+      });
+
+      // 3. Success message aur Login page par bhejna
+      alert("🎉 Account created successfully! Welcome to AdsGuruAI.");
+      router.push("/login");
+
+    } catch (error: any) {
+      console.error("Signup Error:", error);
+      // 4. Agar koi error aaye toh professional message dikhana
+      if (error.code === 'auth/email-already-in-use') {
+        setErrorMsg("This email is already registered. Please Sign In.");
+      } else if (error.code === 'auth/weak-password') {
+        setErrorMsg("Password should be at least 6 characters long.");
+      } else {
+        setErrorMsg("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0F172A] px-4 relative overflow-hidden">
       {/* Background Decorative Glows */}
@@ -22,8 +69,15 @@ export default function SignupPage() {
           <p className="text-gray-400">Join AdsGuruAI to scale your campaigns</p>
         </div>
 
+        {/* Error Message Box */}
+        {errorMsg && (
+          <div className="mb-6 p-3 bg-red-500/10 border border-red-500/50 rounded-xl text-center text-sm text-red-400">
+            {errorMsg}
+          </div>
+        )}
+
         {/* Form */}
-        <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); alert("🚀 Thank you for choosing AdsGuruAI! Due to high demand, our automated registration is rolling out in phases. Our onboarding team will contact you on your email shortly to setup your dashboard."); }}>
+        <form className="space-y-5" onSubmit={handleSignup}>
           
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
@@ -36,6 +90,8 @@ export default function SignupPage() {
               <input
                 type="text"
                 placeholder="Rehan Anwar"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition placeholder-gray-600"
                 required
               />
@@ -53,6 +109,8 @@ export default function SignupPage() {
               <input
                 type="email"
                 placeholder="rehan@adsguruai.in"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition placeholder-gray-600"
                 required
               />
@@ -70,6 +128,8 @@ export default function SignupPage() {
               <input
                 type="password"
                 placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition placeholder-gray-600"
                 required
               />
@@ -79,9 +139,10 @@ export default function SignupPage() {
           {/* Signup Button */}
           <button
             type="submit"
-            className="w-full py-4 mt-2 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl text-gray-900 font-bold hover:from-amber-500 hover:to-amber-700 hover:scale-[1.01] transition active:scale-95 shadow-lg shadow-amber-500/20"
+            disabled={loading}
+            className="w-full py-4 mt-2 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl text-gray-900 font-bold hover:from-amber-500 hover:to-amber-700 hover:scale-[1.01] transition active:scale-95 shadow-lg shadow-amber-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Create Account
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
