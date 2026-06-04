@@ -19,7 +19,7 @@ export function HeroSection() {
           {/* Left Content */}
           <div className="text-center lg:text-left space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mt-2">
+            <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full -mt-6">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-sm text-gray-300">AI-Powered Ads Management</span>
             </div>
