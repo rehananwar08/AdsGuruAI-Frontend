@@ -1,8 +1,47 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../lib/firebase";
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  // Data lene ke liye states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Asli Login Magic Function
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      // 1. Firebase se match karna (Login)
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // 2. Success message aur Dashboard par bhejna
+      alert("🎉 Login Successful! Welcome back.");
+      router.push("/dashboard"); // Yeh future ke dashboard page ke liye hai
+
+    } catch (error: any) {
+      console.error("Login Error:", error);
+      // 3. Agar password ya email galat ho
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        setErrorMsg("Invalid Email or Password. Please try again.");
+      } else {
+        setErrorMsg("Something went wrong. Please check your connection.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0F172A] px-4 relative overflow-hidden">
       {/* Background Decorative Glows */}
@@ -22,8 +61,15 @@ export default function LoginPage() {
           <p className="text-gray-400">Login to manage your AI campaigns</p>
         </div>
 
+        {/* Error Message Box (Agar galat password dale) */}
+        {errorMsg && (
+          <div className="mb-6 p-3 bg-red-500/10 border border-red-500/50 rounded-xl text-center text-sm text-red-400">
+            {errorMsg}
+          </div>
+        )}
+
         {/* Form */}
-        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert("🔒 AdsGuruAI Dashboard is currently undergoing a scheduled AI-model upgrade for better performance. Please try logging in after some time."); }}>
+        <form className="space-y-6" onSubmit={handleLogin}>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
             <div className="relative">
@@ -35,7 +81,10 @@ export default function LoginPage() {
               <input
                 type="email"
                 placeholder="rehan@adsguruai.in"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition placeholder-gray-600"
+                required
               />
             </div>
           </div>
@@ -54,7 +103,10 @@ export default function LoginPage() {
               <input
                 type="password"
                 placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition placeholder-gray-600"
+                required
               />
             </div>
           </div>
@@ -62,9 +114,10 @@ export default function LoginPage() {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full py-4 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl text-gray-900 font-bold hover:from-amber-500 hover:to-amber-700 hover:scale-[1.01] transition active:scale-95 shadow-lg shadow-amber-500/20"
+            disabled={loading}
+            className="w-full py-4 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl text-gray-900 font-bold hover:from-amber-500 hover:to-amber-700 hover:scale-[1.01] transition active:scale-95 shadow-lg shadow-amber-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Sign In to Dashboard
+            {loading ? "Signing In..." : "Sign In to Dashboard"}
           </button>
         </form>
 
