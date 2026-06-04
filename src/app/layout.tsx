@@ -43,6 +43,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-[#0F172A]">
+      <head>
+          <meta name="google-site-verification" content="mb5Nl5vAu87Zb2b59PXHLDUYK7a-geowS-3PSYUjMqU" />
+        </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-[#0F172A] text-white`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
