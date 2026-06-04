@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import { CheckCircle2, Sparkles } from 'lucide-react';
 
 export function PricingSection() {
@@ -40,9 +41,9 @@ export function PricingSection() {
               <li className="flex items-start space-x-3"><CheckCircle2 className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" /> <span><strong>Visual Dashboard</strong> — Usage tracking attractive graphs ke sath.</span></li>
             </ul>
           </div>
-          <button className="w-full mt-8 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors">
+          <Link href="/login" className="block text-center w-full mt-8 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors">
             Start Free
-          </button>
+          </Link>
         </div>
 
         {/* 2. AGENCY PLAN CARD (CENTER / HIGHLIGHTED) */}
@@ -75,9 +76,9 @@ export function PricingSection() {
               <li className="flex items-start space-x-3"><CheckCircle2 className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" /> <span><strong>One-Click Indian Negative Keyword List</strong> — Paisa bachane ke liye standard pre-made list.</span></li>
             </ul>
           </div>
-          <button className="w-full mt-8 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black tracking-wider py-4 px-4 rounded-xl shadow-lg uppercase transition-transform hover:scale-[1.01]">
+          <Link href="/login" className="block text-center w-full mt-8 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black tracking-wider py-4 px-4 rounded-xl shadow-lg uppercase transition-transform hover:scale-[1.01]">
             UNLOCK VIP POWER
-          </button>
+          </Link>
         </div>
 
         {/* 3. PRO PLAN CARD */}
@@ -106,9 +107,9 @@ export function PricingSection() {
               <li className="flex items-start space-x-3"><CheckCircle2 className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" /> <span><strong>Google Ads Connect</strong> — OAuth se real account jodo.</span></li>
             </ul>
           </div>
-          <button className="w-full mt-8 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors">
+          <Link href="/login" className="block text-center w-full mt-8 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors">
             Upgrade to Pro
-          </button>
+          </Link>
         </div>
 
       </div>
