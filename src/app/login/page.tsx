@@ -70,8 +70,8 @@ export default function LoginPage() {
 
         {/* Signup Link */}
         <p className="mt-10 text-center text-sm text-gray-400">
-          New client? {' '}
-          <Link href="/" className="font-semibold text-amber-400 hover:text-amber-300">Book your first AI audit</Link>
+          Don&apos;t have an account? {' '}
+          <Link href="/signup" className="font-semibold text-amber-400 hover:text-amber-300">Register here</Link>
         </p>
       </div>
     </div>
