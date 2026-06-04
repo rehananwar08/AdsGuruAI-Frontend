@@ -11,7 +11,7 @@ export function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo - Far Left */}
             <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-      <img src="/logo.png" alt="AdsGuruAI Logo" className="h-10 w-auto" />
+     <img src="/logo.png" alt="AdsGuruAI Logo" className="h-14 md:h-16 w-auto object-contain" />
             </Link>
 
             {/* Navigation Links - Far Right, Grouped Together */}
