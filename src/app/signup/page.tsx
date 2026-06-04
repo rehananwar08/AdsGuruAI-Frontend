@@ -23,7 +23,7 @@ export default function SignupPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); alert("Registration is currently under maintenance. Please try again later."); }}>
+        <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); alert("🚀 Thank you for choosing AdsGuruAI! Due to high demand, our automated registration is rolling out in phases. Our onboarding team will contact you on your email shortly to setup your dashboard."); }}>
           
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
