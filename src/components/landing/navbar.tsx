@@ -11,11 +11,7 @@ export function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo - Far Left */}
             <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-              <div className="relative">
-                <Sparkles className="w-8 h-8 text-amber-500 transition-transform group-hover:scale-110" />
-                <div className="absolute inset-0 w-8 h-8 bg-amber-500/30 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <span className="text-xl font-bold gradient-text">AdsGuruAI</span>
+      <img src="/logo.png" alt="AdsGuruAI Logo" className="h-10 w-auto" />
             </Link>
 
             {/* Navigation Links - Far Right, Grouped Together */}
