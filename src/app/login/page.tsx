@@ -23,7 +23,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert("Dashboard is currently under maintenance. Please contact support."); }}>
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert("🔒 AdsGuruAI Dashboard is currently undergoing a scheduled AI-model upgrade for better performance. Please try logging in after some time."); }}>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
             <div className="relative">
