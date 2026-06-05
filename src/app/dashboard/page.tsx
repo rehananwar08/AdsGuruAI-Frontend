@@ -9,8 +9,6 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  
-  // Tabs: overview ya billing
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
@@ -85,7 +83,7 @@ export default function DashboardPage() {
         <div className="p-4 mb-4">
           <div className="bg-gradient-to-br from-amber-500/10 to-amber-900/10 border border-amber-500/20 p-4 rounded-2xl text-center">
             <h4 className="text-amber-500 font-bold mb-1">Free Plan Active</h4>
-            <p className="text-xs text-gray-400 mb-3">Upgrade for Google Ads Sync.</p>
+            <p className="text-xs text-gray-400 mb-3">Upgrade for Full AI Access.</p>
             <button 
               onClick={() => setActiveTab("billing")}
               className="w-full py-2 bg-amber-500 hover:bg-amber-400 text-gray-900 text-xs font-bold rounded-lg transition-colors shadow-lg shadow-amber-500/20"
@@ -103,7 +101,7 @@ export default function DashboardPage() {
       {/* 📌 MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col relative h-screen overflow-y-auto z-10">
         
-        {/* Desi-Tech Elite Holographic Gradients */}
+        {/* Holographic Gradients */}
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[150px] pointer-events-none" />
 
@@ -117,7 +115,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-6 ml-auto">
             <div className="flex items-center gap-3 pl-6 border-l border-white/10">
               <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold shadow-lg shadow-amber-500/20 border border-white/10">
-                {user?.displayName ? user.displayName.charAt(0).toUpperCase() : "A"}
+                {user?.displayName ? user.displayName.charAt(0).toUpperCase() : "U"}
               </div>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-semibold text-white">{user?.displayName || "AdsGuru User"}</p>
@@ -127,7 +125,7 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        {/* 📌 TAB: OVERVIEW (Fixed Analytics Lock Overlay) */}
+        {/* 📌 TAB: OVERVIEW */}
         {activeTab === "overview" && (
           <div className="p-8 max-w-7xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center mb-10">
@@ -143,20 +141,17 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* FIXED UI: Relative Container for Stats and Overlay */}
+            {/* Analytics Lock Overlay */}
             <div className="relative mb-8 rounded-2xl overflow-hidden">
-              
-              {/* The Lock Overlay */}
-              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0F172A]/70 backdrop-blur-md border border-white/10">
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0F172A]/80 backdrop-blur-md border border-white/10">
                  <svg className="w-12 h-12 text-amber-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                  <h3 className="text-white font-bold text-xl mb-2">Live Analytics Locked</h3>
-                 <p className="text-gray-400 text-sm mb-4 max-w-md text-center">Sync your Google Ads account and view real-time ROI, CPA, and Spend directly in AdsGuruAI.</p>
+                 <p className="text-gray-400 text-sm mb-4 max-w-md text-center">Sync your Google Ads account to view real-time ROI directly in AdsGuruAI.</p>
                  <button onClick={() => setActiveTab("billing")} className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-700 text-white border border-amber-500/50 rounded-xl font-bold hover:scale-105 transition shadow-[0_0_15px_rgba(245,158,11,0.3)]">
                    Unlock with Pro Plan
                  </button>
               </div>
 
-              {/* Dummy Stats Grid (Blurred behind the lock) */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-30 pointer-events-none p-1">
                 <div className="bg-white/[0.02] border border-white/5 p-6 rounded-2xl">
                   <p className="text-gray-400 text-sm font-medium mb-1">Total Ad Spend</p>
@@ -175,9 +170,9 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* 📌 TAB: BILLING & PLANS (₹ PRICING & BLUEPRINT FEATURES) */}
+        {/* 📌 TAB: BILLING & PLANS (Scrollable Features - Ultra Premium) */}
         {activeTab === "billing" && (
-          <div className="p-8 max-w-7xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="p-8 max-w-7xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
             <div className="text-center mb-12 max-w-3xl mx-auto">
               <h1 className="text-4xl font-extrabold text-white tracking-tight mb-4">
                 Paisa bacha, <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-700">ROI badha.</span>
@@ -185,119 +180,127 @@ export default function DashboardPage() {
               <p className="text-gray-400 text-lg">AI se Google Ads ko master bana — India ke liye, aapki bhasha mein.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
               
-              {/* 1. FREE PLAN */}
-              <div className="bg-white/[0.02] border border-white/10 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col">
-                <h3 className="text-xl font-bold text-white mb-2">Free Plan</h3>
-                <p className="text-gray-400 text-sm mb-6">Basic toolkit to test the AI jadoo.</p>
+              {/* 1. FREE PLAN (₹0) */}
+              <div className="bg-white/[0.02] border border-white/10 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col h-[650px]">
+                <h3 className="text-xl font-bold text-white mb-2">Basic Toolkit</h3>
+                <p className="text-gray-400 text-sm mb-6">Perfect to test the AI jadoo.</p>
                 <div className="mb-6 flex items-baseline gap-1">
                   <span className="text-4xl font-bold text-white">₹0</span>
                   <span className="text-gray-500">/month</span>
                 </div>
-                <ul className="space-y-4 mb-8 flex-1">
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-gray-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    5 AI Requests / month
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-gray-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Voice Prompts (Bol ke Ad Banao)
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-gray-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Ad Copy & Extensions Gen
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-gray-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    WhatsApp Lead Integration
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-gray-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Supports 6 Indian Languages
-                  </li>
-                </ul>
-                <button className="w-full py-4 rounded-xl border border-white/20 text-white font-bold bg-white/5 cursor-not-allowed">
+                
+                {/* Scrollable Features List */}
+                <div className="flex-1 overflow-y-auto pr-2 mb-6 space-y-4 custom-scrollbar relative">
+                  {[
+                    "Ad Copy Generator (RSA Headlines + Desc)",
+                    "Ad Extensions Generator (Callouts, Sitelinks)",
+                    "Voice Prompts (Bol ke Ad Banao)",
+                    "Keyword Research (High intent + Negative)",
+                    "WhatsApp Lead Integration",
+                    "Quality Score Analyzer",
+                    "Referral Program (Refer & Earn ₹200)",
+                    "6 Indian Languages Support",
+                    "Email OTP Verification Security",
+                    "Visual Dashboard (Usage tracking)"
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex items-start gap-3 text-sm text-gray-300">
+                      <svg className="w-5 h-5 text-gray-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                  {/* Fading bottom edge for scroll indicator */}
+                  <div className="sticky bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0F172A] to-transparent pointer-events-none"></div>
+                </div>
+
+                <button className="w-full py-4 rounded-xl border border-white/20 text-white font-bold bg-white/5 cursor-not-allowed mt-auto">
                   Current Plan
                 </button>
               </div>
 
-              {/* 2. PRO PLAN (₹799) - Normal Layout Now */}
-              <div className="bg-white/[0.02] border border-white/10 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col">
-                <h3 className="text-xl font-bold text-white mb-2">Pro Plan</h3>
+              {/* 2. PRO PLAN (₹799) */}
+              <div className="bg-white/[0.04] border border-white/10 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col h-[650px]">
+                <h3 className="text-xl font-bold text-white mb-2">Pro Marketer</h3>
                 <p className="text-amber-500/80 text-sm mb-6">For Serious Marketers.</p>
                 <div className="mb-6 flex items-baseline gap-1">
                   <span className="text-4xl font-bold text-white">₹799</span>
                   <span className="text-gray-500">/month</span>
                 </div>
-                <ul className="space-y-4 mb-8 flex-1">
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Unlimited AI Requests & PMax Asset Creator
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Landing Page Builder & GTM Script Gen
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Google Ads Connect (Live Dashboard)
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Competitor Spy Tool & India Benchmarks
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-300">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    B2B GST Invoicing Available
-                  </li>
-                </ul>
-                <button 
-                  onClick={() => alert("Razorpay Gateway: ₹799 payment will open here! 🚀")}
-                  className="w-full py-4 rounded-xl text-white border border-amber-500/50 font-bold bg-amber-500/10 hover:bg-amber-500/20 transition-all"
-                >
+                
+                {/* Scrollable Features List */}
+                <div className="flex-1 overflow-y-auto pr-2 mb-6 space-y-4 custom-scrollbar relative">
+                  <div className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-2">Everything in Free, plus:</div>
+                  {[
+                    "Performance Max (PMax) Asset Creator",
+                    "Smart Bidding Strategy Advisor",
+                    "Smart Ad Scheduling",
+                    "Budget Planner (₹ wise plan)",
+                    "Conversion Tracking / GTM Generator",
+                    "Ad Performance Analyzer",
+                    "History & Export (Last 30 days)",
+                    "Landing Page Builder (Zero Coding)",
+                    "Landing Page Leads Dashboard",
+                    "Google Ads Connect (OAuth)",
+                    "Live Campaign Dashboard",
+                    "Competitor Spy Tool",
+                    "India Benchmarks (10 Industries)",
+                    "AI Auto-Suggestions",
+                    "A/B Testing Tracker",
+                    "Monthly Auto PDF Report",
+                    "Pincode & City Level Targeter",
+                    "Auto Privacy Policy & Terms Gen"
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex items-start gap-3 text-sm text-gray-200">
+                      <svg className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                  <div className="sticky bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0F172A] to-transparent pointer-events-none"></div>
+                </div>
+
+                <button onClick={() => alert("Redirecting to Razorpay for ₹799...")} className="w-full py-4 rounded-xl text-white border border-amber-500/50 font-bold bg-amber-500/10 hover:bg-amber-500/20 transition-all mt-auto">
                   Upgrade to Pro
                 </button>
               </div>
 
-              {/* 3. AGENCY PLAN (MOST POPULAR, ₹1999) - Highlighted Layout */}
-              <div className="bg-[#0A1122]/80 border-2 border-amber-500 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col shadow-[0_0_40px_rgba(245,158,11,0.15)] transform md:-translate-y-4">
+              {/* 3. AGENCY PLAN (₹1999) - MOST POPULAR */}
+              <div className="bg-[#0A1122]/90 border-2 border-amber-500 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col h-[680px] shadow-[0_0_40px_rgba(245,158,11,0.15)] transform lg:-translate-y-4">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-500 to-amber-700"></div>
                 <div className="absolute top-4 right-4 bg-amber-500/20 text-amber-500 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">
                   MOST POPULAR
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Agency Plan</h3>
+                <h3 className="text-xl font-bold text-white mb-2">Agency Elite</h3>
                 <p className="text-gray-300 text-sm mb-6">For marketing teams & agencies.</p>
                 <div className="mb-6 flex items-baseline gap-1">
                   <span className="text-4xl font-bold text-white">₹1999</span>
                   <span className="text-gray-500">/month</span>
                 </div>
-                <ul className="space-y-4 mb-8 flex-1">
-                  <li className="flex items-start gap-3 text-sm text-gray-100">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Everything in Pro + 5 Team Seats
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-100">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    AI Expert Chatbot (Gemini 3.5 Pro)
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-100">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Custom Domains & White-label Reports
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-100">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Custom Audience & Persona Builder
-                  </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-100">
-                    <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    Basic Click Fraud Alert & Priority Support
-                  </li>
-                </ul>
-                <button 
-                   onClick={() => alert("Razorpay Gateway: ₹1999 payment will open here! 🚀")}
-                   className="w-full py-4 rounded-xl text-gray-900 font-bold bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:scale-[1.02]"
-                >
+                
+                {/* Scrollable Features List */}
+                <div className="flex-1 overflow-y-auto pr-2 mb-6 space-y-4 custom-scrollbar relative">
+                  <div className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-2">Everything in Pro, plus:</div>
+                  {[
+                    "Custom Audience & Persona Builder",
+                    "Custom Domain Setup",
+                    "Basic Click Fraud Alert",
+                    "AI Expert Chatbot (Gemini 3.5 Pro)",
+                    "Client Reports Export",
+                    "White-label PDF Export",
+                    "5 Team Seats",
+                    "Priority Support (Fastest)",
+                    "Festival & Seasonal Campaign Calendar",
+                    "One-Click Indian Negative Keyword List"
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex items-start gap-3 text-sm text-gray-100">
+                      <svg className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                      <span className="font-medium">{feature}</span>
+                    </div>
+                  ))}
+                  <div className="sticky bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0A1122] to-transparent pointer-events-none"></div>
+                </div>
+
+                <button onClick={() => alert("Redirecting to Razorpay for ₹1999...")} className="w-full py-4 rounded-xl text-gray-900 font-bold bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:scale-[1.02] mt-auto">
                   Get Agency Plan
                 </button>
               </div>
@@ -307,6 +310,23 @@ export default function DashboardPage() {
         )}
 
       </main>
+
+      {/* Global Style for hiding standard scrollbar styling but keeping functionality */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+          background: rgba(245, 158, 11, 0.5);
+        }
+      `}} />
     </div>
   );
 }
