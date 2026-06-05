@@ -5,11 +5,25 @@ import { useRouter } from "next/navigation";
 import { auth } from "../../lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
+// 📌 RAZORPAY SCRIPT LOADER
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Payment State
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -26,6 +40,51 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     await signOut(auth);
     router.push("/login");
+  };
+
+  // 📌 PAYMENT HANDLER FUNCTION
+  const handlePayment = async (planName: string, amount: number) => {
+    setIsProcessing(true);
+    try {
+      const res = await loadRazorpayScript();
+      if (!res) {
+        alert("Razorpay SDK failed to load. Please check your connection.");
+        setIsProcessing(false);
+        return;
+      }
+
+      // ⚠️ Abhi testing ke liye hum dummy order structure use kar rahe hain
+      // Jab backend api live ho, toh yahan fetch() call lagayenge
+      const options = {
+        key: "rzp_test_SwdUdrVZhvJvU3", // 👉 AAPKI TEST KEY YAHAN AA GAYI!
+        amount: amount * 100, // Amount in paise
+        currency: "INR",
+        name: "AdsGuruAI",
+        description: `Upgrade to ${planName}`,
+        image: "/logo.png",
+        // order_id: backend se aayega jab API on hogi
+        handler: function (response: any) {
+          alert(`Jadoo Ho Gaya Bhai! 🎉\nPayment Successful in Test Mode.\nPayment ID: ${response.razorpay_payment_id}`);
+          // Future: Yahan se backend ko success message bhejenge
+        },
+        prefill: {
+          name: user?.displayName || "AdsGuru User",
+          email: user?.email || "",
+          contact: "9999999999"
+        },
+        theme: {
+          color: "#F59E0B", // Amber Gold Color for Premium UI
+        },
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      console.error("Payment Error:", error);
+      alert("Payment gateway open hone mein issue aaya.");
+    }
+    setIsProcessing(false);
   };
 
   if (loading) {
@@ -53,29 +112,11 @@ export default function DashboardPage() {
           
           <nav className="p-4 space-y-2 mt-4">
             <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Main Menu</p>
-            
-            <button 
-              onClick={() => setActiveTab("overview")}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === "overview" 
-                ? "bg-gradient-to-r from-amber-500/10 to-transparent text-amber-500 border-l-2 border-amber-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" 
-                : "text-gray-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-              Dashboard
+            <button onClick={() => setActiveTab("overview")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === "overview" ? "bg-gradient-to-r from-amber-500/10 to-transparent text-amber-500 border-l-2 border-amber-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" : "text-gray-400 hover:text-white hover:bg-white/5"}`}>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg> Dashboard
             </button>
-            
-            <button 
-              onClick={() => setActiveTab("billing")}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === "billing" 
-                ? "bg-gradient-to-r from-amber-500/10 to-transparent text-amber-500 border-l-2 border-amber-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" 
-                : "text-gray-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-              Billing & Plans
+            <button onClick={() => setActiveTab("billing")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === "billing" ? "bg-gradient-to-r from-amber-500/10 to-transparent text-amber-500 border-l-2 border-amber-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" : "text-gray-400 hover:text-white hover:bg-white/5"}`}>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg> Billing & Plans
             </button>
           </nav>
         </div>
@@ -84,16 +125,10 @@ export default function DashboardPage() {
           <div className="bg-gradient-to-br from-amber-500/10 to-amber-900/10 border border-amber-500/20 p-4 rounded-2xl text-center">
             <h4 className="text-amber-500 font-bold mb-1">Free Plan Active</h4>
             <p className="text-xs text-gray-400 mb-3">Upgrade for Full AI Access.</p>
-            <button 
-              onClick={() => setActiveTab("billing")}
-              className="w-full py-2 bg-amber-500 hover:bg-amber-400 text-gray-900 text-xs font-bold rounded-lg transition-colors shadow-lg shadow-amber-500/20"
-            >
-              Upgrade Now
-            </button>
+            <button onClick={() => setActiveTab("billing")} className="w-full py-2 bg-amber-500 hover:bg-amber-400 text-gray-900 text-xs font-bold rounded-lg transition-colors shadow-lg shadow-amber-500/20">Upgrade Now</button>
           </div>
           <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full mt-4 px-4 py-3 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-            Sign Out
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg> Sign Out
           </button>
         </div>
       </aside>
@@ -133,10 +168,7 @@ export default function DashboardPage() {
                 <h1 className="text-3xl font-extrabold text-white tracking-tight">Workspace Overview</h1>
                 <p className="text-gray-400 mt-1">AI dashboard for Indian marketers.</p>
               </div>
-              <button 
-                onClick={() => setActiveTab("billing")}
-                className="group relative inline-flex items-center justify-center gap-2 bg-amber-500 text-gray-900 px-6 py-3 rounded-xl font-bold transition-all hover:bg-amber-400 hover:scale-105 shadow-[0_0_20px_rgba(245,158,11,0.3)]"
-              >
+              <button onClick={() => setActiveTab("billing")} className="group relative inline-flex items-center justify-center gap-2 bg-amber-500 text-gray-900 px-6 py-3 rounded-xl font-bold transition-all hover:bg-amber-400 hover:scale-105 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
                 + Create AI Campaign
               </button>
             </div>
@@ -170,7 +202,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* 📌 TAB: BILLING & PLANS (Scrollable Features - Ultra Premium) */}
+        {/* 📌 TAB: BILLING & PLANS */}
         {activeTab === "billing" && (
           <div className="p-8 max-w-7xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
             <div className="text-center mb-12 max-w-3xl mx-auto">
@@ -182,7 +214,7 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
               
-              {/* 1. FREE PLAN (₹0) */}
+              {/* 1. FREE PLAN */}
               <div className="bg-white/[0.02] border border-white/10 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col h-[650px]">
                 <h3 className="text-xl font-bold text-white mb-2">Basic Toolkit</h3>
                 <p className="text-gray-400 text-sm mb-6">Perfect to test the AI jadoo.</p>
@@ -191,7 +223,6 @@ export default function DashboardPage() {
                   <span className="text-gray-500">/month</span>
                 </div>
                 
-                {/* Scrollable Features List */}
                 <div className="flex-1 overflow-y-auto pr-2 mb-6 space-y-4 custom-scrollbar relative">
                   {[
                     "Ad Copy Generator (RSA Headlines + Desc)",
@@ -210,7 +241,6 @@ export default function DashboardPage() {
                       <span>{feature}</span>
                     </div>
                   ))}
-                  {/* Fading bottom edge for scroll indicator */}
                   <div className="sticky bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0F172A] to-transparent pointer-events-none"></div>
                 </div>
 
@@ -219,7 +249,7 @@ export default function DashboardPage() {
                 </button>
               </div>
 
-              {/* 2. PRO PLAN (₹799) */}
+              {/* 2. PRO PLAN */}
               <div className="bg-white/[0.04] border border-white/10 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col h-[650px]">
                 <h3 className="text-xl font-bold text-white mb-2">Pro Marketer</h3>
                 <p className="text-amber-500/80 text-sm mb-6">For Serious Marketers.</p>
@@ -228,7 +258,6 @@ export default function DashboardPage() {
                   <span className="text-gray-500">/month</span>
                 </div>
                 
-                {/* Scrollable Features List */}
                 <div className="flex-1 overflow-y-auto pr-2 mb-6 space-y-4 custom-scrollbar relative">
                   <div className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-2">Everything in Free, plus:</div>
                   {[
@@ -259,12 +288,16 @@ export default function DashboardPage() {
                   <div className="sticky bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0F172A] to-transparent pointer-events-none"></div>
                 </div>
 
-                <button onClick={() => alert("Redirecting to Razorpay for ₹799...")} className="w-full py-4 rounded-xl text-white border border-amber-500/50 font-bold bg-amber-500/10 hover:bg-amber-500/20 transition-all mt-auto">
-                  Upgrade to Pro
+                <button 
+                  onClick={() => handlePayment("Pro Plan", 799)} 
+                  disabled={isProcessing}
+                  className="w-full py-4 rounded-xl text-white border border-amber-500/50 font-bold bg-amber-500/10 hover:bg-amber-500/20 transition-all mt-auto"
+                >
+                  {isProcessing ? "Processing..." : "Upgrade to Pro"}
                 </button>
               </div>
 
-              {/* 3. AGENCY PLAN (₹1999) - MOST POPULAR */}
+              {/* 3. AGENCY PLAN */}
               <div className="bg-[#0A1122]/90 border-2 border-amber-500 p-8 rounded-3xl relative backdrop-blur-xl flex flex-col h-[680px] shadow-[0_0_40px_rgba(245,158,11,0.15)] transform lg:-translate-y-4">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-500 to-amber-700"></div>
                 <div className="absolute top-4 right-4 bg-amber-500/20 text-amber-500 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">
@@ -277,7 +310,6 @@ export default function DashboardPage() {
                   <span className="text-gray-500">/month</span>
                 </div>
                 
-                {/* Scrollable Features List */}
                 <div className="flex-1 overflow-y-auto pr-2 mb-6 space-y-4 custom-scrollbar relative">
                   <div className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-2">Everything in Pro, plus:</div>
                   {[
@@ -300,8 +332,12 @@ export default function DashboardPage() {
                   <div className="sticky bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0A1122] to-transparent pointer-events-none"></div>
                 </div>
 
-                <button onClick={() => alert("Redirecting to Razorpay for ₹1999...")} className="w-full py-4 rounded-xl text-gray-900 font-bold bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:scale-[1.02] mt-auto">
-                  Get Agency Plan
+                <button 
+                  onClick={() => handlePayment("Agency Elite", 1999)} 
+                  disabled={isProcessing}
+                  className="w-full py-4 rounded-xl text-gray-900 font-bold bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:scale-[1.02] mt-auto"
+                >
+                  {isProcessing ? "Processing..." : "Get Agency Plan"}
                 </button>
               </div>
 
@@ -311,21 +347,12 @@ export default function DashboardPage() {
 
       </main>
 
-      {/* Global Style for hiding standard scrollbar styling but keeping functionality */}
+      {/* Global Scrollbar Style */}
       <style dangerouslySetInnerHTML={{__html: `
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 10px;
-        }
-        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-          background: rgba(245, 158, 11, 0.5);
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.5); }
       `}} />
     </div>
   );
