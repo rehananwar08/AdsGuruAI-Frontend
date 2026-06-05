@@ -42,7 +42,7 @@ export default function DashboardPage() {
     router.push("/login");
   };
 
-  // 📌 PAYMENT HANDLER FUNCTION
+  // 📌 ASLI PAYMENT HANDLER FUNCTION (API CONNECTED)
   const handlePayment = async (planName: string, amount: number) => {
     setIsProcessing(true);
     try {
@@ -53,19 +53,39 @@ export default function DashboardPage() {
         return;
       }
 
-      // ⚠️ Abhi testing ke liye hum dummy order structure use kar rahe hain
-      // Jab backend api live ho, toh yahan fetch() call lagayenge
+      // 👉 1. Asli Backend se Order ID mangwa rahe hain
+      const backendApiUrl = "https://adsguruai-backend.onrender.com/api/create-order"; 
+      
+      const orderResponse = await fetch(backendApiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          amount: amount, 
+          plan: planName,
+          email: user?.email || "unknown_user" 
+        }),
+      });
+
+      const orderData = await orderResponse.json();
+
+      if (!orderData || !orderData.id) {
+        alert("Backend se Order ID nahi ban payi. Backend check karein!");
+        setIsProcessing(false);
+        return;
+      }
+
+      // 👉 2. Razorpay Popup Modal Setup (Asli Order ID ke sath)
       const options = {
-        key: "rzp_test_SwdUdrVZhvJvU3", // 👉 AAPKI TEST KEY YAHAN AA GAYI!
-        amount: amount * 100, // Amount in paise
-        currency: "INR",
+        key: "rzp_test_SwdUdrVZhvJvU3", // Aapki Test Key
+        amount: orderData.amount, // Backend se aayega (paise mein)
+        currency: orderData.currency || "INR",
         name: "AdsGuruAI",
         description: `Upgrade to ${planName}`,
         image: "/logo.png",
-        // order_id: backend se aayega jab API on hogi
+        order_id: orderData.id, // 🔥 BACKEND WALI ASLI ORDER ID
         handler: function (response: any) {
-          alert(`Jadoo Ho Gaya Bhai! 🎉\nPayment Successful in Test Mode.\nPayment ID: ${response.razorpay_payment_id}`);
-          // Future: Yahan se backend ko success message bhejenge
+          alert(`Jadoo Ho Gaya Bhai! 🎉\nPayment Successful!\nPayment ID: ${response.razorpay_payment_id}`);
+          // Future Step: Yahan hum ek aur API call karenge payment_id backend bhejkar 
         },
         prefill: {
           name: user?.displayName || "AdsGuru User",
@@ -73,7 +93,7 @@ export default function DashboardPage() {
           contact: "9999999999"
         },
         theme: {
-          color: "#F59E0B", // Amber Gold Color for Premium UI
+          color: "#F59E0B", 
         },
       };
 
@@ -82,7 +102,7 @@ export default function DashboardPage() {
 
     } catch (error) {
       console.error("Payment Error:", error);
-      alert("Payment gateway open hone mein issue aaya.");
+      alert("Payment gateway open hone mein issue aaya. Console check karein.");
     }
     setIsProcessing(false);
   };
