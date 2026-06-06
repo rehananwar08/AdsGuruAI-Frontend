@@ -83,9 +83,39 @@ export default function DashboardPage() {
         description: `Upgrade to ${planName}`,
         image: "/logo.png",
         order_id: orderData.id, // 🔥 BACKEND WALI ASLI ORDER ID
-        handler: function (response: any) {
-          alert(`Jadoo Ho Gaya Bhai! 🎉\nPayment Successful!\nPayment ID: ${response.razorpay_payment_id}`);
-          // Future Step: Yahan hum ek aur API call karenge payment_id backend bhejkar 
+        handler: async function (response: any) {
+          // 👉 3. PAYMENT VERIFICATION LOGIC
+          console.log("Payment Success IDs:", response);
+          
+          try {
+            const verifyUrl = "https://adsguruai-backend.onrender.com/api/verify-payment"; 
+            
+            const verifyRes = await fetch(verifyUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                email: user?.email,
+                plan: planName
+              })
+            });
+
+            const verifyData = await verifyRes.json();
+
+            if (verifyRes.ok) {
+               alert(`Jadoo Ho Gaya Bhai! 🎉\nPayment Verify ho gayi! Aapka plan ab ${planName} hai.`);
+               // Yahan hum dashboard ko refresh kar sakte hain naye credits dikhane ke liye
+               // window.location.reload(); 
+            } else {
+               alert("Payment successful, but verification failed. Support se sampark karein.");
+            }
+
+          } catch (err) {
+            console.error("Verification error:", err);
+            alert("Payment verification API mein error aaya.");
+          }
         },
         prefill: {
           name: user?.displayName || "AdsGuru User",
