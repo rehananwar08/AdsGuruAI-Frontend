@@ -42,7 +42,7 @@ export default function DashboardPage() {
     router.push("/login");
   };
 
-  // 📌 ASLI PAYMENT HANDLER FUNCTION (API CONNECTED)
+  // 📌 ASLI PAYMENT HANDLER FUNCTION (API CONNECTED + SECURE GUARD)
   const handlePayment = async (planName: string, amount: number) => {
     setIsProcessing(true);
     try {
@@ -53,12 +53,19 @@ export default function DashboardPage() {
         return;
       }
 
-      // 👉 1. Asli Backend se Order ID mangwa rahe hain
-      const backendApiUrl = "https://adsguruai-backend.onrender.com/api/create-order"; 
+      // 🔐 1. SECURITY: Firebase se current user ka secret token nikal rahe hain
+      // Yeh token backend ke 'protect' middleware ko pass karne ke liye chahiye
+      const idToken = await user.getIdToken(true);
+
+      // 👉 2. BACKEND API CALL (Screenshot ke route ke hisaab se)
+      const backendApiUrl = "https://adsguruai-backend.onrender.com/api/payment/create-subscription"; 
       
       const orderResponse = await fetch(backendApiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}` // 🔐 Guard ko ID Card dikha rahe hain
+        },
         body: JSON.stringify({ 
           amount: amount, 
           plan: planName,
@@ -68,54 +75,25 @@ export default function DashboardPage() {
 
       const orderData = await orderResponse.json();
 
-      if (!orderData || !orderData.id) {
-        alert("Backend se Order ID nahi ban payi. Backend check karein!");
+      if (!orderData || (!orderData.id && !orderData.order_id)) {
+        console.error("Backend Response:", orderData);
+        alert("Backend se Order ID nahi aayi. Console check karein!");
         setIsProcessing(false);
         return;
       }
 
-      // 👉 2. Razorpay Popup Modal Setup (Asli Order ID ke sath)
+      // 👉 3. RAZORPAY POPUP SETUP
       const options = {
         key: "rzp_test_SwdUdrVZhvJvU3", // Aapki Test Key
-        amount: orderData.amount, // Backend se aayega (paise mein)
+        amount: orderData.amount || amount * 100, 
         currency: orderData.currency || "INR",
         name: "AdsGuruAI",
         description: `Upgrade to ${planName}`,
         image: "/logo.png",
-        order_id: orderData.id, // 🔥 BACKEND WALI ASLI ORDER ID
-        handler: async function (response: any) {
-          // 👉 3. PAYMENT VERIFICATION LOGIC
-          console.log("Payment Success IDs:", response);
-          
-          try {
-            const verifyUrl = "https://adsguruai-backend.onrender.com/api/verify-payment"; 
-            
-            const verifyRes = await fetch(verifyUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                email: user?.email,
-                plan: planName
-              })
-            });
-
-            const verifyData = await verifyRes.json();
-
-            if (verifyRes.ok) {
-               alert(`Jadoo Ho Gaya Bhai! 🎉\nPayment Verify ho gayi! Aapka plan ab ${planName} hai.`);
-               // Yahan hum dashboard ko refresh kar sakte hain naye credits dikhane ke liye
-               // window.location.reload(); 
-            } else {
-               alert("Payment successful, but verification failed. Support se sampark karein.");
-            }
-
-          } catch (err) {
-            console.error("Verification error:", err);
-            alert("Payment verification API mein error aaya.");
-          }
+        order_id: orderData.id || orderData.order_id, // 🔥 BACKEND WALI ASLI ORDER ID
+        handler: function (response: any) {
+          // 🎉 Webhook apna kaam piche se kar lega, humein bas success dikhana hai!
+          alert(`Jadoo Ho Gaya Bhai! 🎉\nPayment Successful!\nRazorpay Webhook ab aapka database background mein update kar dega.`);
         },
         prefill: {
           name: user?.displayName || "AdsGuru User",
