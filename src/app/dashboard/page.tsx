@@ -58,7 +58,7 @@ export default function DashboardPage() {
       const idToken = await user.getIdToken(true);
 
       // 👉 2. BACKEND API CALL (Screenshot ke route ke hisaab se)
-      const backendApiUrl = "https://adsguruai-backend.onrender.com/api/payment/create-subscription"; 
+     const backendApiUrl = "https://adsguruai-backend.onrender.com/api/v1/payments/create-subscription";
       
       const orderResponse = await fetch(backendApiUrl, {
         method: "POST",
